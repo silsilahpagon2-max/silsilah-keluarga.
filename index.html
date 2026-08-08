@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silsilah Keluarga Besar</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 20px; }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 5px solid #2c3e50; display: flex; align-items: flex-start; gap: 15px; }
+        .card-content { flex: 1; }
+        .card h3 { margin: 0 0 10px 0; color: #2c3e50; }
+        .card p { margin: 5px 0; font-size: 14px; color: #555; }
+        .label { font-weight: bold; color: #333; }
+        .profile-pic { width: 75px; height: 75px; border-radius: 50%; object-fit: cover; background-color: #eee; border: 2px solid #2c3e50; }
+    </style>
+</head>
+<body>
+
+    <h1>Data Silsilah Keluarga Besar</h1>
+    <div class="grid-container" id="family-container"></div>
+
+    <script>
+        fetch('data_keluarga.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('family-container');
+                data.forEach(orang => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    
+                    const fotoUrl = orang.foto ? orang.foto : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+
+                    card.innerHTML = `
+                        <img src="${fotoUrl}" alt="Foto" class="profile-pic" onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'">
+                        <div class="card-content">
+                            <h3>${orang.nama}</h3>
+                            <p><span class="label">TTL:</span> ${orang.tempat_lahir}, ${orang.tanggal_lahir}</p>
+                            <p><span class="label">Gender:</span> ${orang.jenis_kelamin}</p>
+                            <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                            <p><span class="label">Bapak:</span> ${orang.id_bapak ? orang.id_bapak.replace(/_/g, ' ') : '-'}</p>
+                            <p><span class="label">Ibu:</span> ${orang.id_ibu ? orang.id_ibu.replace(/_/g, ' ') : '-'}</p>
+                            <p><span class="label">Pasangan:</span> ${orang.pasangan ? orang.pasangan : '-'}</p>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            })
+            .catch(error => {
+                document.getElementById('family-container').innerHTML = '<p style="text-align:center; width:100%;">Belum ada data atau data sedang diproses. Silakan kembali lagi nanti.</p>';
+            });
+    </script>
+</body>
+</html>
